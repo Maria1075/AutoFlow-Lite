@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
@@ -51,10 +51,10 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login correcto.',
-            'token'   => $token,
-            'user'    => [
-                'id'    => $user->id,
-                'name'  => $user->name,
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
                 'email' => $user->email,
             ],
         ]);
@@ -65,8 +65,8 @@ class AuthController extends Controller
     {
         return response()->json([
             'user' => [
-                'id'    => $request->user()->id,
-                'name'  => $request->user()->name,
+                'id' => $request->user()->id,
+                'name' => $request->user()->name,
                 'email' => $request->user()->email,
             ],
         ]);

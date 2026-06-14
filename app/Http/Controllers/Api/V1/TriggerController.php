@@ -40,9 +40,9 @@ class TriggerController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'workflow_id'     => 'required|exists:workflows,id',
-            'name'            => 'required|string|max:200',
-            'type'            => 'required|in:manual,webhook,cron',
+            'workflow_id' => 'required|exists:workflows,id',
+            'name' => 'required|string|max:200',
+            'type' => 'required|in:manual,webhook,cron',
             'cron_expression' => 'required_if:type,cron|nullable|string|max:100',
         ]);
 
@@ -50,7 +50,7 @@ class TriggerController extends Controller
 
         return response()->json([
             'message' => 'Trigger creado correctamente.',
-            'data'    => new TriggerResource($trigger),
+            'data' => new TriggerResource($trigger),
         ], 201);
     }
 

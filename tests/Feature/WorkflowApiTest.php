@@ -16,9 +16,9 @@ test('listar workflows es público', function () {
     $response = $this->getJson('/api/v1/workflows');
 
     $response->assertStatus(200)
-             ->assertJsonStructure([
-                 'data' => [['id', 'name', 'is_active']],
-             ]);
+        ->assertJsonStructure([
+            'data' => [['id', 'name', 'is_active']],
+        ]);
 });
 
 // ── POST /workflows ───────────────────────────────────────────────────
@@ -32,20 +32,20 @@ test('crear workflow requiere autenticación', function () {
 });
 
 test('crear workflow con token crea el registro', function () {
-    $user    = User::factory()->create();
+    $user = User::factory()->create();
     $process = Process::factory()->create();
 
     $response = $this->actingAs($user)->postJson('/api/v1/workflows', [
-        'name'        => 'Notificar Slack',
+        'name' => 'Notificar Slack',
         'description' => 'Envía mensaje cuando el proceso termina',
-        'is_active'   => true,
-        'process_id'  => $process->id,
+        'is_active' => true,
+        'process_id' => $process->id,
     ]);
 
     $response->assertStatus(201)
-             ->assertJsonPath('data.name', 'Notificar Slack')
-             ->assertJsonPath('data.is_active', true)
-             ->assertJsonPath('data.process_id', $process->id);
+        ->assertJsonPath('data.name', 'Notificar Slack')
+        ->assertJsonPath('data.is_active', true)
+        ->assertJsonPath('data.process_id', $process->id);
 
     $this->assertDatabaseHas('workflows', ['name' => 'Notificar Slack']);
 });
@@ -53,17 +53,17 @@ test('crear workflow con token crea el registro', function () {
 // ── POST /workflows/{id}/run ──────────────────────────────────────────
 
 test('ejecutar workflow desactivado devuelve 422', function () {
-    $user     = User::factory()->create();
+    $user = User::factory()->create();
     $workflow = Workflow::factory()->create(['is_active' => false]);
 
     $response = $this->actingAs($user)->postJson("/api/v1/workflows/{$workflow->id}/run");
 
     $response->assertStatus(422)
-             ->assertJsonPath('message', 'El workflow está desactivado.');
+        ->assertJsonPath('message', 'El workflow está desactivado.');
 });
 
 test('ejecutar workflow activo crea registro de ejecución', function () {
-    $user     = User::factory()->create();
+    $user = User::factory()->create();
     $workflow = Workflow::factory()->create(['is_active' => true]);
 
     $response = $this->actingAs($user)->postJson("/api/v1/workflows/{$workflow->id}/run", [
@@ -71,13 +71,13 @@ test('ejecutar workflow activo crea registro de ejecución', function () {
     ]);
 
     $response->assertStatus(200)
-             ->assertJsonPath('message', 'Workflow ejecutado.')
-             ->assertJsonStructure(['execution' => ['status', 'triggered_by']]);
+        ->assertJsonPath('message', 'Workflow ejecutado.')
+        ->assertJsonStructure(['execution' => ['status', 'triggered_by']]);
 
     $this->assertDatabaseHas('workflow_executions', [
-        'workflow_id'  => $workflow->id,
+        'workflow_id' => $workflow->id,
         'triggered_by' => 'manual',
-        'status'       => 'success',
+        'status' => 'success',
     ]);
 });
 
@@ -89,15 +89,15 @@ test('ver logs de workflow es público', function () {
     $response = $this->getJson("/api/v1/workflows/{$workflow->id}/logs");
 
     $response->assertStatus(200)
-             ->assertJsonStructure(['data']);
+        ->assertJsonStructure(['data']);
 });
 
 // ── DELETE /workflows/{id} ────────────────────────────────────────────
 
 test('eliminar workflow elimina triggers y acciones en cascada', function () {
-    $user     = User::factory()->create();
+    $user = User::factory()->create();
     $workflow = Workflow::factory()->create();
-    $trigger  = Trigger::factory()->create(['workflow_id' => $workflow->id]);
+    $trigger = Trigger::factory()->create(['workflow_id' => $workflow->id]);
 
     $this->actingAs($user)->deleteJson("/api/v1/workflows/{$workflow->id}");
 

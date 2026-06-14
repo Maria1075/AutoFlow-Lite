@@ -43,10 +43,10 @@ class WorkflowController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:200',
+            'name' => 'required|string|max:200',
             'description' => 'nullable|string',
-            'is_active'   => 'boolean',
-            'process_id'  => 'nullable|exists:processes,id',
+            'is_active' => 'boolean',
+            'process_id' => 'nullable|exists:processes,id',
         ]);
 
         $workflow = Workflow::create($validated);
@@ -54,7 +54,7 @@ class WorkflowController extends Controller
 
         return response()->json([
             'message' => 'Workflow creado correctamente.',
-            'data'    => new WorkflowResource($workflow),
+            'data' => new WorkflowResource($workflow),
         ], 201);
     }
 
@@ -70,10 +70,10 @@ class WorkflowController extends Controller
     public function update(Request $request, Workflow $workflow): JsonResponse
     {
         $validated = $request->validate([
-            'name'        => 'sometimes|string|max:200',
+            'name' => 'sometimes|string|max:200',
             'description' => 'nullable|string',
-            'is_active'   => 'boolean',
-            'process_id'  => 'nullable|exists:processes,id',
+            'is_active' => 'boolean',
+            'process_id' => 'nullable|exists:processes,id',
         ]);
 
         $workflow->update($validated);
@@ -81,7 +81,7 @@ class WorkflowController extends Controller
 
         return response()->json([
             'message' => 'Workflow actualizado correctamente.',
-            'data'    => new WorkflowResource($workflow->fresh(['triggers', 'actions'])),
+            'data' => new WorkflowResource($workflow->fresh(['triggers', 'actions'])),
         ]);
     }
 
@@ -108,7 +108,7 @@ class WorkflowController extends Controller
         $execution = $this->webhookService->run($workflow, 'manual', $payload);
 
         return response()->json([
-            'message'   => 'Workflow ejecutado.',
+            'message' => 'Workflow ejecutado.',
             'execution' => new WorkflowExecutionResource($execution),
         ]);
     }

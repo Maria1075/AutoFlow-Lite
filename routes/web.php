@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\AIController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessController;
-use App\Http\Controllers\AIController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -16,4 +16,4 @@ Route::post('/ai/analyze', [AIController::class, 'analyze'])->name('ai.analyze')
 Route::get('/processes/{process}/ai-analyze', [AIController::class, 'analyzeExisting'])->name('processes.ai-analyze');
 
 // API Explorer — demo visual de la REST API
-Route::get('/api-explorer', fn() => view('api.explorer'))->name('api.explorer');
+Route::get('/api-explorer', fn () => view('api.explorer'))->name('api.explorer');

@@ -15,13 +15,13 @@ class ActionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this->id,
+            'id' => $this->id,
             'workflow_id' => $this->workflow_id,
-            'name'        => $this->name,
-            'type'        => $this->type,
-            'config'      => $this->config,
-            'sort_order'  => $this->sort_order,
-            'created_at'  => $this->created_at?->toIso8601String(),
+            'name' => $this->name,
+            'type' => $this->type,
+            'config' => $this->config,
+            'sort_order' => $this->sort_order,
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

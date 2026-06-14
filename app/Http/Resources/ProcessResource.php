@@ -15,18 +15,18 @@ class ProcessResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'               => $this->id,
-            'name'             => $this->name,
-            'description'      => $this->description,
-            'frequency'        => $this->frequency,
-            'status'           => $this->status,
-            'webhook_url'      => $this->webhook_url,
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'frequency' => $this->frequency,
+            'status' => $this->status,
+            'webhook_url' => $this->webhook_url,
             'executions_count' => $this->executions_count,
-            'success_count'    => $this->success_count,
-            'success_rate'     => $this->success_rate,
+            'success_count' => $this->success_count,
+            'success_rate' => $this->success_rate,
             'is_automatizable' => $this->isAutomatizable(),
-            'created_at'       => $this->created_at?->toIso8601String(),
-            'updated_at'       => $this->updated_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

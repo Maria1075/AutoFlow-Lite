@@ -39,18 +39,18 @@ class ActionController extends Controller
     {
         $validated = $request->validate([
             'workflow_id' => 'required|exists:workflows,id',
-            'name'        => 'required|string|max:200',
-            'type'        => 'required|in:http_request,log',
-            'config'      => 'required_if:type,http_request|nullable|array',
-            'config.url'  => 'required_if:type,http_request|url',
-            'sort_order'  => 'integer|min:0',
+            'name' => 'required|string|max:200',
+            'type' => 'required|in:http_request,log',
+            'config' => 'required_if:type,http_request|nullable|array',
+            'config.url' => 'required_if:type,http_request|url',
+            'sort_order' => 'integer|min:0',
         ]);
 
         $action = Action::create($validated);
 
         return response()->json([
             'message' => 'Acción creada correctamente.',
-            'data'    => new ActionResource($action),
+            'data' => new ActionResource($action),
         ], 201);
     }
 

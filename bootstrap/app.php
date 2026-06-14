@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // 401 — No autenticado
-        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'message' => 'No autenticado. Incluye el token en la cabecera: Authorization: Bearer {token}',
@@ -31,9 +35,10 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // 405 — Método no permitido (los métodos van en el header Allow, no en getAllowedMethods)
-        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 $allow = $e->getHeaders()['Allow'] ?? 'desconocido';
+
                 return response()->json([
                     'message' => "Método {$request->method()} no permitido. Métodos aceptados: {$allow}",
                 ], 405);
@@ -41,7 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // 404 — Ruta no encontrada
-        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json(['message' => 'Ruta no encontrada.'], 404);
             }

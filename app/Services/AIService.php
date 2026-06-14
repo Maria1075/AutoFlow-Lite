@@ -18,7 +18,7 @@ class AIService
     public function analyzeProcess(string $name, string $description): array
     {
         try {
-            $response = Http::timeout(30)->post($this->apiUrl . '?key=' . config('services.gemini.key'), [
+            $response = Http::timeout(30)->post($this->apiUrl.'?key='.config('services.gemini.key'), [
                 'contents' => [
                     [
                         'parts' => [
@@ -42,7 +42,7 @@ class AIService
                 'body' => $response->body(),
             ]);
         } catch (\Exception $e) {
-            Log::error('Gemini API error: ' . $e->getMessage());
+            Log::error('Gemini API error: '.$e->getMessage());
         }
 
         return $this->fallbackAnalysis($name);
@@ -88,7 +88,7 @@ Descripción: {$description}
 PROMPT;
 
         try {
-            $response = Http::timeout(30)->post($this->apiUrl . '?key=' . config('services.gemini.key'), [
+            $response = Http::timeout(30)->post($this->apiUrl.'?key='.config('services.gemini.key'), [
                 'contents' => [
                     ['parts' => [['text' => $prompt]]],
                 ],
@@ -103,15 +103,15 @@ PROMPT;
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Gemini suggestWorkflow error: ' . $e->getMessage());
+            Log::error('Gemini suggestWorkflow error: '.$e->getMessage());
         }
 
         // Fallback con sugerencia genérica
         return [
-            'workflow_name'        => "Automatización de {$name}",
+            'workflow_name' => "Automatización de {$name}",
             'workflow_description' => "Workflow generado para: {$description}",
-            'trigger'              => ['name' => 'Activación manual', 'type' => 'manual', 'cron_expression' => null],
-            'actions'              => [
+            'trigger' => ['name' => 'Activación manual', 'type' => 'manual', 'cron_expression' => null],
+            'actions' => [
                 ['name' => 'Registrar ejecución', 'type' => 'log', 'sort_order' => 1, 'config' => null],
             ],
             'explanation' => 'Sugerencia de fallback — Gemini no disponible.',

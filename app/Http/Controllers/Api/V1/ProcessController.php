@@ -44,22 +44,22 @@ class ProcessController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:200|min:3',
+            'name' => 'required|string|max:200|min:3',
             'description' => 'required|string|min:10',
-            'frequency'   => 'required|in:hourly,daily,weekly,monthly,manual',
+            'frequency' => 'required|in:hourly,daily,weekly,monthly,manual',
             'webhook_url' => 'nullable|url|max:500',
         ]);
 
         $process = Process::create([
             ...$validated,
-            'status'           => 'active',
+            'status' => 'active',
             'executions_count' => 0,
-            'success_count'    => 0,
+            'success_count' => 0,
         ]);
 
         return response()->json([
             'message' => 'Proceso creado correctamente.',
-            'data'    => new ProcessResource($process),
+            'data' => new ProcessResource($process),
         ], 201);
     }
 
@@ -73,10 +73,10 @@ class ProcessController extends Controller
     public function update(Request $request, Process $process): JsonResponse
     {
         $validated = $request->validate([
-            'name'        => 'sometimes|string|max:200|min:3',
+            'name' => 'sometimes|string|max:200|min:3',
             'description' => 'sometimes|string|min:10',
-            'frequency'   => 'sometimes|in:hourly,daily,weekly,monthly,manual',
-            'status'      => 'sometimes|in:active,paused,completed',
+            'frequency' => 'sometimes|in:hourly,daily,weekly,monthly,manual',
+            'status' => 'sometimes|in:active,paused,completed',
             'webhook_url' => 'nullable|url|max:500',
         ]);
 
@@ -84,7 +84,7 @@ class ProcessController extends Controller
 
         return response()->json([
             'message' => 'Proceso actualizado correctamente.',
-            'data'    => new ProcessResource($process->fresh()),
+            'data' => new ProcessResource($process->fresh()),
         ]);
     }
 
@@ -110,10 +110,10 @@ class ProcessController extends Controller
         }
 
         $executionData = [
-            'process_id'   => $process->id,
+            'process_id' => $process->id,
             'process_name' => $process->name,
-            'success'      => $success,
-            'executed_at'  => now()->toIso8601String(),
+            'success' => $success,
+            'executed_at' => now()->toIso8601String(),
         ];
 
         $webhookFired = false;
@@ -128,18 +128,18 @@ class ProcessController extends Controller
         foreach ($process->workflows()->where('is_active', true)->with('actions')->get() as $workflow) {
             $execution = $this->webhookService->run($workflow, 'process_execute', $executionData);
             $workflowResults[] = [
-                'workflow_id'   => $workflow->id,
+                'workflow_id' => $workflow->id,
                 'workflow_name' => $workflow->name,
-                'status'        => $execution->status,
+                'status' => $execution->status,
             ];
         }
 
         return response()->json([
-            'message'          => $success ? 'Proceso ejecutado correctamente.' : 'El proceso falló durante la ejecución.',
-            'success'          => $success,
-            'process'          => new ProcessResource($process->fresh()),
-            'webhook_fired'    => $webhookFired,
-            'workflows_run'    => $workflowResults,
+            'message' => $success ? 'Proceso ejecutado correctamente.' : 'El proceso falló durante la ejecución.',
+            'success' => $success,
+            'process' => new ProcessResource($process->fresh()),
+            'webhook_fired' => $webhookFired,
+            'workflows_run' => $workflowResults,
         ]);
     }
 
@@ -163,7 +163,7 @@ class ProcessController extends Controller
         $analysis = $this->aiService->analyzeProcess($process->name, $process->description);
 
         return response()->json([
-            'data'    => $analysis,
+            'data' => $analysis,
             'process' => new ProcessResource($process),
         ]);
     }

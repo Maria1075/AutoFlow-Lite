@@ -21,9 +21,9 @@ class WebhookService
     /**
      * Ejecuta todas las acciones de un workflow en orden y guarda el resultado.
      *
-     * @param  Workflow  $workflow    El workflow a ejecutar
-     * @param  string    $triggeredBy Quién lo activó (manual, webhook, process_execute)
-     * @param  array     $payload     Datos recibidos del trigger (body del webhook, etc.)
+     * @param  Workflow  $workflow  El workflow a ejecutar
+     * @param  string  $triggeredBy  Quién lo activó (manual, webhook, process_execute)
+     * @param  array  $payload  Datos recibidos del trigger (body del webhook, etc.)
      */
     public function run(Workflow $workflow, string $triggeredBy = 'manual', array $payload = []): WorkflowExecution
     {
@@ -44,17 +44,17 @@ class WebhookService
 
         // Determinar estado global de la ejecución
         $status = match (true) {
-            ! $hasError               => 'success',
-            count($results) === 0     => 'success',
-            default                   => count(array_filter($results, fn ($r) => $r['ok'])) > 0 ? 'partial' : 'failed',
+            ! $hasError => 'success',
+            count($results) === 0 => 'success',
+            default => count(array_filter($results, fn ($r) => $r['ok'])) > 0 ? 'partial' : 'failed',
         };
 
         // Guardar en el historial de ejecuciones
         return WorkflowExecution::create([
-            'workflow_id'      => $workflow->id,
-            'triggered_by'     => $triggeredBy,
-            'status'           => $status,
-            'request_payload'  => $payload,
+            'workflow_id' => $workflow->id,
+            'triggered_by' => $triggeredBy,
+            'status' => $status,
+            'request_payload' => $payload,
             'response_payload' => $results,
         ]);
     }
@@ -63,8 +63,8 @@ class WebhookService
      * Lanza el webhook saliente de un proceso (outgoing webhook — Idea 1).
      * Se llama cuando se ejecuta un proceso que tiene webhook_url configurada.
      *
-     * @param  string  $url     URL externa a notificar
-     * @param  array   $payload Datos de la ejecución del proceso
+     * @param  string  $url  URL externa a notificar
+     * @param  array  $payload  Datos de la ejecución del proceso
      */
     public function fireProcessWebhook(string $url, array $payload): bool
     {
@@ -75,12 +75,12 @@ class WebhookService
 
             Log::info("Webhook saliente enviado a {$url}", [
                 'status' => $response->status(),
-                'ok'     => $response->successful(),
+                'ok' => $response->successful(),
             ]);
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error("Error al enviar webhook a {$url}: " . $e->getMessage());
+            Log::error("Error al enviar webhook a {$url}: ".$e->getMessage());
 
             return false;
         }
@@ -91,8 +91,8 @@ class WebhookService
     {
         return match ($action->type) {
             'http_request' => $this->executeHttpRequest($action, $payload),
-            'log'          => $this->executeLog($action, $payload),
-            default        => ['action' => $action->name, 'type' => $action->type, 'ok' => false, 'error' => 'Tipo desconocido'],
+            'log' => $this->executeLog($action, $payload),
+            default => ['action' => $action->name, 'type' => $action->type, 'ok' => false, 'error' => 'Tipo desconocido'],
         };
     }
 
@@ -114,14 +114,14 @@ class WebhookService
                 ->post($url, $body);
 
             return [
-                'action'      => $action->name,
-                'type'        => 'http_request',
-                'url'         => $url,
+                'action' => $action->name,
+                'type' => 'http_request',
+                'url' => $url,
                 'http_status' => $response->status(),
-                'ok'          => $response->successful(),
+                'ok' => $response->successful(),
             ];
         } catch (\Exception $e) {
-            Log::error("Acción http_request '{$action->name}' falló: " . $e->getMessage());
+            Log::error("Acción http_request '{$action->name}' falló: ".$e->getMessage());
 
             return ['action' => $action->name, 'type' => 'http_request', 'ok' => false, 'error' => $e->getMessage()];
         }

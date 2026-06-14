@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Trigger;
+use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,11 +19,11 @@ class TriggerFactory extends Factory
     public function definition(): array
     {
         return [
-            'workflow_id'     => \App\Models\Workflow::factory(),
-            'name'            => $this->faker->sentence(2),
-            'type'            => 'manual',
+            'workflow_id' => Workflow::factory(),
+            'name' => $this->faker->sentence(2),
+            'type' => 'manual',
             'cron_expression' => null,
-            'webhook_token'   => null,
+            'webhook_token' => null,
         ];
     }
 }

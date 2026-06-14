@@ -18,13 +18,13 @@ class ProcessFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'             => $this->faker->sentence(3),
-            'description'      => $this->faker->paragraph(),
-            'frequency'        => $this->faker->randomElement(['hourly', 'daily', 'weekly', 'monthly', 'manual']),
-            'status'           => 'active',
-            'webhook_url'      => null,
+            'name' => $this->faker->sentence(3),
+            'description' => $this->faker->paragraph(),
+            'frequency' => $this->faker->randomElement(['hourly', 'daily', 'weekly', 'monthly', 'manual']),
+            'status' => 'active',
+            'webhook_url' => null,
             'executions_count' => 0,
-            'success_count'    => 0,
+            'success_count' => 0,
         ];
     }
 }

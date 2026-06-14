@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Process extends Model
 {
@@ -20,12 +21,12 @@ class Process extends Model
         'success_count',
     ];
 
-    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Workflow> */
-    public function workflows(): \Illuminate\Database\Eloquent\Relations\HasMany
+    /** @return HasMany<Workflow> */
+    public function workflows(): HasMany
     {
         return $this->hasMany(Workflow::class);
     }
-    
+
     // Calcular tasa de éxito
     public function getSuccessRateAttribute(): float
     {
@@ -33,22 +34,22 @@ class Process extends Model
         if ((int) $this->executions_count === 0) {
             return 0;
         }
-        
+
         return round(($this->success_count / $this->executions_count) * 100, 2);
     }
-    
+
     // Determinar si es automatizable
     public function isAutomatizable(): bool
     {
         $automatizableKeywords = ['repetitivo', 'diario', 'informe', 'email', 'copia', 'backup', 'reporte'];
         $description = strtolower($this->description);
-        
+
         foreach ($automatizableKeywords as $keyword) {
             if (strpos($description, $keyword) !== false) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

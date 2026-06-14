@@ -25,7 +25,7 @@ class AIController extends Controller
     public function analyze(Request $request): JsonResponse
     {
         $request->validate([
-            'process_name'        => 'required|string|max:200',
+            'process_name' => 'required|string|max:200',
             'process_description' => 'required|string|min:10',
         ]);
 
@@ -44,7 +44,7 @@ class AIController extends Controller
     public function suggest(Request $request): JsonResponse
     {
         $request->validate([
-            'process_name'        => 'required|string|max:200',
+            'process_name' => 'required|string|max:200',
             'process_description' => 'required|string|min:10',
         ]);
 
@@ -55,7 +55,7 @@ class AIController extends Controller
 
         return response()->json([
             'message' => 'Sugerencia de workflow generada con IA.',
-            'data'    => $suggestion,
+            'data' => $suggestion,
         ]);
     }
 }

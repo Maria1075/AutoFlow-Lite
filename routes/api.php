@@ -41,10 +41,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/webhooks/{token}', [WebhookController::class, 'handle']);
 
     // Lectura pública de procesos y workflows (GET)
-    Route::get('/processes',              [ProcessController::class, 'index']);
-    Route::get('/processes/{process}',    [ProcessController::class, 'show']);
-    Route::get('/workflows',              [WorkflowController::class, 'index']);
-    Route::get('/workflows/{workflow}',   [WorkflowController::class, 'show']);
+    Route::get('/processes', [ProcessController::class, 'index']);
+    Route::get('/processes/{process}', [ProcessController::class, 'show']);
+    Route::get('/workflows', [WorkflowController::class, 'index']);
+    Route::get('/workflows/{workflow}', [WorkflowController::class, 'show']);
     Route::get('/workflows/{workflow}/logs', [WorkflowController::class, 'logs']);
 
 });
@@ -58,34 +58,34 @@ Route::prefix('v1')->group(function () {
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
     // Auth
-    Route::get('/auth/me',      [AuthController::class, 'me']);
+    Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     // Procesos — escritura + acciones
-    Route::post('/processes',                           [ProcessController::class, 'store']);
-    Route::put('/processes/{process}',                  [ProcessController::class, 'update']);
-    Route::patch('/processes/{process}',                [ProcessController::class, 'update']);
-    Route::delete('/processes/{process}',               [ProcessController::class, 'destroy']);
-    Route::post('/processes/{process}/execute',         [ProcessController::class, 'execute']);
-    Route::get('/processes/{process}/executions',       [ProcessController::class, 'executions']);
-    Route::post('/processes/{process}/analyze',         [ProcessController::class, 'analyze']);
+    Route::post('/processes', [ProcessController::class, 'store']);
+    Route::put('/processes/{process}', [ProcessController::class, 'update']);
+    Route::patch('/processes/{process}', [ProcessController::class, 'update']);
+    Route::delete('/processes/{process}', [ProcessController::class, 'destroy']);
+    Route::post('/processes/{process}/execute', [ProcessController::class, 'execute']);
+    Route::get('/processes/{process}/executions', [ProcessController::class, 'executions']);
+    Route::post('/processes/{process}/analyze', [ProcessController::class, 'analyze']);
 
     // Workflows — escritura + ejecución
-    Route::post('/workflows',                           [WorkflowController::class, 'store']);
-    Route::put('/workflows/{workflow}',                 [WorkflowController::class, 'update']);
-    Route::patch('/workflows/{workflow}',               [WorkflowController::class, 'update']);
-    Route::delete('/workflows/{workflow}',              [WorkflowController::class, 'destroy']);
-    Route::post('/workflows/{workflow}/run',            [WorkflowController::class, 'run']);
+    Route::post('/workflows', [WorkflowController::class, 'store']);
+    Route::put('/workflows/{workflow}', [WorkflowController::class, 'update']);
+    Route::patch('/workflows/{workflow}', [WorkflowController::class, 'update']);
+    Route::delete('/workflows/{workflow}', [WorkflowController::class, 'destroy']);
+    Route::post('/workflows/{workflow}/run', [WorkflowController::class, 'run']);
 
     // Triggers
-    Route::get('/triggers',                [TriggerController::class, 'index']);
-    Route::post('/triggers',               [TriggerController::class, 'store']);
-    Route::delete('/triggers/{trigger}',   [TriggerController::class, 'destroy']);
+    Route::get('/triggers', [TriggerController::class, 'index']);
+    Route::post('/triggers', [TriggerController::class, 'store']);
+    Route::delete('/triggers/{trigger}', [TriggerController::class, 'destroy']);
 
     // Actions
-    Route::get('/actions',                 [ActionController::class, 'index']);
-    Route::post('/actions',                [ActionController::class, 'store']);
-    Route::delete('/actions/{action}',     [ActionController::class, 'destroy']);
+    Route::get('/actions', [ActionController::class, 'index']);
+    Route::post('/actions', [ActionController::class, 'store']);
+    Route::delete('/actions/{action}', [ActionController::class, 'destroy']);
 
     // IA — rate limit 10 peticiones/minuto
     Route::middleware('throttle:10,1')->prefix('ai')->group(function () {

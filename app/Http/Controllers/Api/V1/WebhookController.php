@@ -52,10 +52,10 @@ class WebhookController extends Controller
         );
 
         return response()->json([
-            'message'      => 'Webhook recibido y procesado.',
-            'workflow'     => $workflow->name,
-            'status'       => $execution->status,
-            'executed_at'  => $execution->created_at?->toIso8601String(),
+            'message' => 'Webhook recibido y procesado.',
+            'workflow' => $workflow->name,
+            'status' => $execution->status,
+            'executed_at' => $execution->created_at?->toIso8601String(),
         ]);
     }
 }
