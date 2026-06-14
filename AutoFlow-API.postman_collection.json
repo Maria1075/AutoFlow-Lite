@@ -1,0 +1,466 @@
+{
+    "info": {
+        "name": "AutoFlow Lite — API v1",
+        "description": "REST API para automatización de procesos e integración de herramientas digitales.\n\n**Stack:** Laravel 12 · PHP 8.2 · Sanctum · Gemini AI\n\n**Flujo de autenticación:**\n1. Ejecuta «Login» para obtener el token.\n2. El token se guarda automáticamente en la variable `token`.\n3. Todas las rutas protegidas lo usan como Bearer Token.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        { "key": "base_url", "value": "http://localhost:8000/api/v1", "type": "string" },
+        { "key": "token",    "value": "",                             "type": "string" }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "exec": [
+                                "const res = pm.response.json();",
+                                "if (res.token) { pm.collectionVariables.set('token', res.token); }"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/auth/login",
+                        "header": [{ "key": "Accept", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"admin@autoflow.test\",\n  \"password\": \"password123\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Datos del usuario (me)",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/auth/me",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/auth/logout",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Procesos (Idea 1 — Process Automation)",
+            "item": [
+                {
+                    "name": "Listar procesos",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/processes",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Crear proceso",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/processes",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Generación de informes mensuales\",\n  \"description\": \"Cada primer día del mes, el sistema consulta la base de datos, genera un PDF y lo envía por correo a los gerentes.\",\n  \"frequency\": \"monthly\",\n  \"webhook_url\": \"https://webhook.site/tu-url-aqui\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Ver proceso",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/processes/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Actualizar proceso",
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/processes/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"paused\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar proceso",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{base_url}}/processes/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Ejecutar proceso (dispara webhook saliente)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/processes/1/execute",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Historial de ejecuciones",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/processes/1/executions",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Analizar proceso con IA",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/processes/1/analyze",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Workflows (Idea 2 — Integration Hub)",
+            "item": [
+                {
+                    "name": "Listar workflows",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/workflows",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Crear workflow",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/workflows",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Notificar Slack al ejecutar proceso\",\n  \"description\": \"Envía un mensaje a Slack cada vez que se ejecuta el proceso de informes.\",\n  \"is_active\": true,\n  \"process_id\": 1\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Ver workflow",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/workflows/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Activar / desactivar workflow",
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/workflows/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"is_active\": false\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Ejecutar workflow manualmente",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/workflows/1/run",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"payload\": { \"custom_data\": \"valor de prueba\" }\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Logs del workflow",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/workflows/1/logs",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Eliminar workflow",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{base_url}}/workflows/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Triggers",
+            "item": [
+                {
+                    "name": "Listar triggers",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/triggers",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Crear trigger manual",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/triggers",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"workflow_id\": 1,\n  \"name\": \"Activación manual desde API\",\n  \"type\": \"manual\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Crear trigger webhook (genera URL pública)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/triggers",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"workflow_id\": 1,\n  \"name\": \"Webhook desde Slack/GitHub\",\n  \"type\": \"webhook\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Crear trigger cron",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/triggers",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"workflow_id\": 1,\n  \"name\": \"Primer día de cada mes a las 8:00\",\n  \"type\": \"cron\",\n  \"cron_expression\": \"0 8 1 * *\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar trigger",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{base_url}}/triggers/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Acciones",
+            "item": [
+                {
+                    "name": "Listar acciones",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/actions",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                },
+                {
+                    "name": "Crear acción HTTP (webhook saliente)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/actions",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"workflow_id\": 1,\n  \"name\": \"Notificar a Slack\",\n  \"type\": \"http_request\",\n  \"sort_order\": 1,\n  \"config\": {\n    \"url\": \"https://hooks.slack.com/services/TU/SLACK/WEBHOOK\",\n    \"method\": \"POST\",\n    \"headers\": { \"Content-Type\": \"application/json\" },\n    \"body\": { \"text\": \"Proceso ejecutado correctamente\" }\n  }\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Crear acción de log",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/actions",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"workflow_id\": 1,\n  \"name\": \"Registrar en logs\",\n  \"type\": \"log\",\n  \"sort_order\": 2\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar acción",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{base_url}}/actions/1",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "IA — Gemini",
+            "item": [
+                {
+                    "name": "Analizar proceso (recomendaciones)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/ai/analyze",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"process_name\": \"Generación de informes mensuales\",\n  \"process_description\": \"Cada primer día del mes, el sistema consulta la base de datos, genera un PDF con gráficos y lo envía por correo a los gerentes.\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Sugerir workflow completo (IA)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/ai/suggest",
+                        "header": [
+                            { "key": "Accept",        "value": "application/json" },
+                            { "key": "Content-Type",  "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"process_name\": \"Backup de base de datos\",\n  \"process_description\": \"Cada noche a las 2:00 AM se hace un backup de la base de datos MySQL y se sube a S3. Si falla, se notifica al equipo de devops.\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Webhooks entrantes (sin autenticación)",
+            "item": [
+                {
+                    "name": "Disparar workflow por token",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/webhooks/REEMPLAZA_CON_TU_TOKEN",
+                        "header": [
+                            { "key": "Accept",       "value": "application/json" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"source\": \"github\",\n  \"event\": \"push\",\n  \"repository\": \"mi-proyecto\",\n  \"branch\": \"main\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
