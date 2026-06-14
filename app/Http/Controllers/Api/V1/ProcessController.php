@@ -52,7 +52,9 @@ class ProcessController extends Controller
 
         $process = Process::create([
             ...$validated,
-            'status' => 'active',
+            'status'           => 'active',
+            'executions_count' => 0,
+            'success_count'    => 0,
         ]);
 
         return response()->json([

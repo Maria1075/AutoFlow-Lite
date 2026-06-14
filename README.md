@@ -8,14 +8,15 @@ Aplicación web full-stack para la gestión y automatización de procesos empres
 
 |       Capa        |      Tecnología           |      Versión      |
 |-------------------|---------------------------|-------------------|
-| Backend           | Laravel                   | 12.62.0           |
-| Lenguaje          | PHP                       | 8.2.12            |
-| Base de datos     | MySQL                     | 8.4.3             |
-| Autenticación API | Laravel Sanctum           | 4.3               |
+| Backend           | Laravel                   | 12.x              |
+| Lenguaje          | PHP                       | 8.2               |
+| Base de datos     | MySQL                     | —                 |
+| Autenticación API | Laravel Sanctum           | 4.x               |
 | Frontend          | Blade + CSS Grid + JS ES6+| —                 |
 | IA                | Google Gemini API         | 2.5 Flash         |
-| Testing           | Pest                      | —                 |
-| Formateador       | Laravel Pint              | 1.0               |
+| Testing           | Pest                      | 3.x               |
+| Formateador       | Laravel Pint              | 1.x               |
+|-------------------------------------------------------------------|
 ---
 
 ## Instalación
